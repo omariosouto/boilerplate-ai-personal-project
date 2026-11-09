@@ -3,6 +3,7 @@ import { Button, useTheme } from '@repo/ui';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
+import { SheetChat } from '@/components/sheet-chat';
 import { SheetGrid } from '@/components/sheet-grid';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -11,7 +12,7 @@ import { Radius, Spacing } from '@/constants/theme';
 const pickerApiKey = process.env.EXPO_PUBLIC_GOOGLE_PICKER_API_KEY ?? '';
 const projectNumber = process.env.EXPO_PUBLIC_GOOGLE_CLOUD_PROJECT_NUMBER ?? '';
 
-/** Grants access to the linked spreadsheet and shows its `Settings` tab. */
+/** Grants access to the linked spreadsheet, shows its tabs and the floating sheet chat. */
 export function SheetDbConnection({ spreadsheetId }: { spreadsheetId: string }) {
   const theme = useTheme();
   const sheetDb = useSheetDb({ spreadsheetId, pickerApiKey, projectNumber });
@@ -51,6 +52,7 @@ export function SheetDbConnection({ spreadsheetId }: { spreadsheetId: string }) 
         <>
           <ThemedText type="smallBold">Connected · {sheetDb.title}</ThemedText>
           <SheetGrid spreadsheetId={spreadsheetId} tabs={sheetDb.tabs} />
+          <SheetChat spreadsheetId={spreadsheetId} tabs={sheetDb.tabs} />
         </>
       )}
 

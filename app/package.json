@@ -5,7 +5,9 @@
   "dependencies": {
     "@expo/ui": "~58.0.27",
     "@repo/auth": "*",
+    "@repo/generative-ui": "*",
     "@repo/hotkeys": "*",
+    "@repo/on-device-ai": "*",
     "@repo/sheet-db": "*",
     "@repo/state-management": "^0.0.0",
     "@repo/ui": "*",

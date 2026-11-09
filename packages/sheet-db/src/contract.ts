@@ -56,8 +56,22 @@ export type SheetTabOptions = {
   tab: string | null;
 };
 
+export type SheetTabs = {
+  /** Every used cell of each tab, keyed by tab name (same shape as `SheetTab['rows']`). */
+  data: Record<string, string[][]>;
+  isLoading: boolean;
+  error: Error | null;
+};
+
+export type SheetTabsOptions = {
+  spreadsheetId: string | null;
+  tabs: string[];
+};
+
 export type SheetDbContract = {
   useSheetDb: (options: SheetDbOptions) => SheetDb;
   /** Reads/writes any tab of the connected spreadsheet. Use after `useSheetDb` reports `connected`. */
   useSheetTab: (options: SheetTabOptions) => SheetTab;
+  /** Reads several tabs at once (read-only), e.g. to summarize the whole spreadsheet. */
+  useSheetTabs: (options: SheetTabsOptions) => SheetTabs;
 };
