@@ -17,6 +17,8 @@ packages/state-management/  # @repo/state-management — async state and URL que
 packages/hotkeys/           # @repo/hotkeys — keyboard shortcuts
 packages/auth/              # @repo/auth — Google sign-in
 packages/sheet-db/          # @repo/sheet-db — the user's Google Sheet as the app database
+packages/on-device-ai/      # @repo/on-device-ai — on-device LLM (Chrome's Prompt API / Gemini Nano)
+packages/generative-ui/     # @repo/generative-ui — AI answers rendered as components (json-render)
 ```
 
 ```bash
@@ -40,6 +42,8 @@ npm run lint             # lint all workspaces
 - **Keyboard shortcuts go through `@repo/hotkeys`**, a proxy for [TanStack Hotkeys](https://tanstack.com/hotkeys/latest). `HotkeysProvider` is mounted in the root layout. The native implementation is a no-op for now, so register hotkeys without platform checks.
 - **Auth goes through `@repo/auth`** (`AuthProvider` in the root layout, `useAuth()` in screens). Web: Google Identity Services, 100% client-side, session in `sessionStorage`. Native: same contract, not implemented yet. Client IDs come from `app/.env.local` (see `app/.env.example`).
 - **Data lives in the user's own Google Sheet, through `@repo/sheet-db`.** The user pastes the link (saved per device with `usePersistedState`), then grants access with the Google Picker. The app asks only for `drive.file`, so it can read/write that one spreadsheet and nothing else in the user's Drive. Never request broader scopes like `spreadsheets` or `drive`. Config lives in the `Settings` tab (`key | value`); e.g. `theme` (`light`/`dark`) drives the app's color scheme via `AppThemeProvider` → `ColorSchemeProvider` from `@repo/ui`.
+- **AI runs on the user's device, through `@repo/on-device-ai`.** Web: Chrome's built-in Prompt API (Gemini Nano, Chrome 148+ desktop) — no server, no API key, data never leaves the device. Native: same contract, reports `unavailable` for now. Always handle `availability` (unsupported browsers, first-run model download). The model is small: compute numbers in code and let it only choose what to show; constrain its output with `responseConstraint` (JSON Schema).
+- **AI-generated UI goes through `@repo/generative-ui`**, a proxy for [json-render](https://json-render.dev) (React Native renderer, so it runs on web and native). Define a catalog + registry; the model's answer becomes a spec that `Renderer` draws. The sheet chat (`app/src/components/sheet-chat*.tsx`) is the reference example.
 - **Web API first, native follows the same contract.** When a library only works on the web, its proxy package defines the public API in `contract.ts` (taken from the web library), implements it in `index.web.ts`, and implements the same contract for iOS/Android in `index.ts`. Callers never branch on platform. A native implementation may start as a no-op, but it must keep the contract so it can be filled in later without touching callers. `packages/hotkeys/` is the reference example; `@repo/ui` applies the same idea to shadcn/ui.
 
 ## Expo

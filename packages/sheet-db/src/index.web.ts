@@ -6,9 +6,26 @@ import { useAuth } from '@repo/auth';
 import { useMutation, useQuery, useQueryClient } from '@repo/state-management/async-state';
 import { useCallback } from 'react';
 
-import type { SheetDb, SheetDbContract, SheetDbOptions, SheetDbStatus, SheetTab, SheetTabOptions } from './contract';
+import type {
+  SheetDb,
+  SheetDbContract,
+  SheetDbOptions,
+  SheetDbStatus,
+  SheetTab,
+  SheetTabOptions,
+  SheetTabs,
+  SheetTabsOptions,
+} from './contract';
 import { pickSpreadsheet } from './picker';
-import { getSpreadsheetInfo, readSettings, readTab, SheetsApiError, writeCell, writeSetting } from './sheets-api';
+import {
+  getSpreadsheetInfo,
+  readSettings,
+  readTab,
+  readTabs,
+  SheetsApiError,
+  writeCell,
+  writeSetting,
+} from './sheets-api';
 
 const DRIVE_FILE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 
@@ -110,8 +127,26 @@ export function useSheetTab({ spreadsheetId, tab }: SheetTabOptions): SheetTab {
   };
 }
 
-const sheetDb = { useSheetDb, useSheetTab } satisfies SheetDbContract;
+export function useSheetTabs({ spreadsheetId, tabs }: SheetTabsOptions): SheetTabs {
+  const { accessToken, grantedScopes } = useAuth();
+  const enabled = Boolean(spreadsheetId && tabs.length > 0 && accessToken && grantedScopes.includes(DRIVE_FILE_SCOPE));
+
+  // Under the same ['sheet-db', id] prefix as every other read, so any write refetches it too.
+  const query = useQuery({
+    queryKey: ['sheet-db', spreadsheetId, 'tabs', tabs],
+    queryFn: () => readTabs(accessToken!, spreadsheetId!, tabs),
+    enabled,
+  });
+
+  return {
+    data: query.data ?? {},
+    isLoading: query.isPending && query.fetchStatus !== 'idle',
+    error: query.error ?? null,
+  };
+}
+
+const sheetDb = { useSheetDb, useSheetTab, useSheetTabs } satisfies SheetDbContract;
 
 export default sheetDb;
-export type { SheetDb, SheetDbSettings, SheetDbStatus, SheetTab } from './contract';
+export type { SheetDb, SheetDbSettings, SheetDbStatus, SheetTab, SheetTabs } from './contract';
 export { columnLetter } from './sheets-api';

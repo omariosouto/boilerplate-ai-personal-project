@@ -55,6 +55,17 @@ export async function readTab(accessToken: string, spreadsheetId: string, tab: s
   return data.values ?? [];
 }
 
+/** Reads several tabs in one request (`values:batchGet`), keyed by tab name. */
+export async function readTabs(accessToken: string, spreadsheetId: string, tabs: string[]) {
+  if (tabs.length === 0) return {};
+  const ranges = tabs.map((tab) => `ranges=${encodeURIComponent(quoteTab(tab))}`).join('&');
+  const data = await request<{ valueRanges?: { values?: string[][] }[] }>(
+    accessToken,
+    `${spreadsheetId}/values:batchGet?${ranges}`
+  );
+  return Object.fromEntries(tabs.map((tab, index) => [tab, data.valueRanges?.[index]?.values ?? []]));
+}
+
 /** Writes one cell, parsed like typing it in Google Sheets (numbers, dates and formulas included). */
 export async function writeCell(
   accessToken: string,

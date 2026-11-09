@@ -30,8 +30,14 @@ export const useSheetTab: SheetDbContract['useSheetTab'] = () => ({
   setCell: notAvailable,
 });
 
-const sheetDb = { useSheetDb, useSheetTab } satisfies SheetDbContract;
+export const useSheetTabs: SheetDbContract['useSheetTabs'] = () => ({
+  data: {},
+  isLoading: false,
+  error: null,
+});
+
+const sheetDb = { useSheetDb, useSheetTab, useSheetTabs } satisfies SheetDbContract;
 
 export default sheetDb;
-export type { SheetDb, SheetDbSettings, SheetDbStatus, SheetTab } from './contract';
+export type { SheetDb, SheetDbSettings, SheetDbStatus, SheetTab, SheetTabs } from './contract';
 export { columnLetter } from './sheets-api';
