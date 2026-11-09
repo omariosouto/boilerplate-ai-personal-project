@@ -1,0 +1,33 @@
+{
+  "name": "@repo/state-management",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.tsx",
+  "types": "src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./async-state": "./src/async-state/index.ts",
+    "./query-state": "./src/query-state/index.ts",
+    "./persisted-state": {
+      "types": "./src/persisted-state/index.ts",
+      "browser": "./src/persisted-state/index.web.ts",
+      "default": "./src/persisted-state/index.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.107.1",
+    "nuqs": "^2.10.2"
+  },
+  "peerDependencies": {
+    "expo-router": "*",
+    "react": "*",
+    "react-native": "*"
+  },
+  "devDependencies": {
+    "@types/react": "~19.3.0",
+    "typescript": "~6.0.3"
+  }
+}

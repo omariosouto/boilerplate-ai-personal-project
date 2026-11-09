@@ -1,0 +1,16 @@
+{
+  "name": "boilerplate-ai-personal-project",
+  "private": true,
+  "workspaces": [
+    "app",
+    "packages/*"
+  ],
+  "scripts": {
+    "app": "npm run start --workspace app",
+    "app:ios": "npm run ios --workspace app",
+    "app:android": "npm run android --workspace app",
+    "app:web": "npm run web --workspace app",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}
